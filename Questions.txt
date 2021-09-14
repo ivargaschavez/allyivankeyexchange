@@ -1,0 +1,65 @@
+COSC 311 Assignment #1: Secure Messaging
+
+
+NAMES: [Full Names of both partners]
+
+______________________________________________________________________________________
+
+Question #1
+Describe the protocol you agreed upon with your classmates in English (no code) in
+enough detail that someone else could implement it. 
+
+[Your answer here]
+
+______________________________________________________________________________________
+
+Question #2
+Describe two pros of the protocol you agreed upon with your classmates.
+
+[Your answer here]
+
+______________________________________________________________________________________
+
+Question #3
+Describe two cons of the protocol you agreed upon with your classmates.
+
+[Your answer here]
+
+______________________________________________________________________________________
+
+Question #4
+Thinking like a defender, what/who do you have to trust in order to be confident
+that messages sent using your SecureMessaging.py cannot be obtained by an adversary and why? 
+Describe at least THREE entities you must trust.  
+
+[Your answer here]
+
+______________________________________________________________________________________
+
+Question #5
+Thinking like an attacker, how might an adversary still compromise the confidentiality or 
+integrity of a message sent to a classmate using your SecureMessaging.py? 
+Describe at least TWO potential attacks. 
+
+[Your answer here]
+
+______________________________________________________________________________________
+
+Question #6 (ungraded)
+How did you divide the work between partners? (Put N/A if worked alone)
+
+[Your answer here]
+
+______________________________________________________________________________________
+
+Question #7 (optional, ungraded)
+Did you use code snippets from anywhere online that you need to cite?
+
+[Your answer here]
+
+______________________________________________________________________________________
+
+Question #8 (optional, ungraded) 
+Do you have any suggestions for improving this assignment in the future?
+
+[Your answer here]
