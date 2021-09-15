@@ -12,7 +12,6 @@ import sys
 import socket
 import os
 from threading import Thread
-
 import Crypto
 import pyDH
 
@@ -26,7 +25,7 @@ class SecureMessage:
     def __init__(self, server_ip=None, server_port=None):
         """Initialize SecureMessage object, create & connect socket,
            do key exchange, and start send & receive loops"""
-
+    
         # create IPv4 TCP socket
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -73,10 +72,72 @@ class SecureMessage:
 
     def key_exchange(self):
         """TODO: Diffie-Hellman key exchange"""
+
+        #server public key exchange
+        #server = pyDH.DiffieHellman()
+
+        #server_pubkey = server.gen_public_key()
+
+     
+        port = self.s.getsockname()
+     
+        #server public key exchange
+        print("this is host:")
+        print(port[0])
+        print("this is port:")
+        print(port[1])
+        server = pyDH.DiffieHellman()
+
+        server_pubkey = server.gen_public_key()
+
+
+        print("server key:")
+        print(server_pubkey)
+        server_1 = "This is the servers public key:\n"
+        self.s.sendall(str(server_1).encode('utf8'))
+
+        #need to send this key to client: python3 SecureMessaging.py [Server IP] [Server Port]
+        self.s.sendall(str(server_pubkey).encode('utf8'))
+        print("server public key sent to client")
+        msg = "Do you have a public key? (Yes / No)"
+        self.s.sendall(str(msg).encode('utf8'))
+        data = self.s.recv(SEND_BUFFER_SIZE)
+        print(data)
+        print("did we get it")
+        #bytes to str
+        check = data.decode('utf8')
+
+        if(check == "Yes"):
+            print("yes it is equal")
+        else:
+            print("no")
+        #client public key 
+        client = pyDH.DiffieHellman()
+        client_pubkey = client.gen_public_key()
+     
+        
+        
+       
+        
+        """
+        d1 = pyDH.DiffieHellman()
+        d2 = pyDH.DiffieHellman()
+        d1_pubkey = d1.gen_public_key()
+        d2_pubkey = d2.gen_public_key()
+        d1_sharedkey = d1.gen_shared_key(d2_pubkey)
+        d2_sharedkey = d2.gen_shared_key(d1_pubkey)
+
+        print(d1_sharedkey == d2_sharedkey)
+
+        print(d1_pubkey,'\n',d2_pubkey)
+        print(d1_sharedkey,' and ',d2_sharedkey)
+        print("hello world")
+        """
         pass
 
     def process_user_input(self, user_input):
         """TODO: Add authentication and encryption"""
+
         return user_input
 
     def process_received_message(self, recv_msg):
@@ -86,6 +147,7 @@ class SecureMessage:
 
 def main():
     """Parse command-line arguments and start client/server"""
+    
 
     # too few arguments
     if len(sys.argv) < 2:
@@ -102,6 +164,8 @@ def main():
         server_ip = sys.argv[1]
         server_port = int(sys.argv[2])
 
+    
+
     # create SecureMessage object
     secure_message = SecureMessage(
         server_ip=server_ip, server_port=server_port)
@@ -109,3 +173,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+   
