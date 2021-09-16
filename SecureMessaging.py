@@ -99,21 +99,32 @@ class SecureMessage:
             server = pyDH.DiffieHellman()
             server_pubkey = server.gen_public_key()
             server_pubkey = (str(server_pubkey)+"\n").encode()
-            self.mysend(b'server public key:')
+            #self.mysend(b'server public key:')
             self.mysend(server_pubkey)
-            
-            
+            data = self.s.recv(SEND_BUFFER_SIZE).decode()
+            print("Client public key: \n", data)
+            print("***")
+            intdata = int(data)
+            server_sharedkey = server.gen_shared_key(intdata)
+            print("Shared Key: \n", server_sharedkey)
         #client
         else:
-       
+            data = self.s.recv(SEND_BUFFER_SIZE).decode()
+            print("Server public key: \n", data)
+            print("***")
+            intdata = int(data)
+            #bytedata = bytes(data, 'utf-8')
+            #self.mysend(b'client recieved public key')
             client = pyDH.DiffieHellman()
             client_pubkey = client.gen_public_key()
             client_pubkey = (str(client_pubkey)+"\n").encode()
-            self.mysend(b'client public key:')
+            #self.mysend(b'client public key:')
             self.mysend(client_pubkey)
+            client_sharedkey = client.gen_shared_key(intdata)
+            print("Shared Key: \n", client_sharedkey)
         """
 
-        self.s.send(server_pubkey[:SEND_BUFFER_SIZE])
+        
         server_sentkey = int(self.s.recv(SEND_BUFFER_SIZE).decode())
 
         self.server_sharedkey = server.gen_shared_key(server_sentkey)
