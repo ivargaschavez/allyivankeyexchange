@@ -19,7 +19,10 @@ import pyDH
 QUEUE_LENGTH = 1
 SEND_BUFFER_SIZE = 2048
 AES_KEY_SIZE = 32
-
+SERVER_TO_CLIENT_KEY = 0
+CLIENT_TO_SERVER_KEY = 0
+SERVER_OR_CLIENT = True
+BYTE_SIZE = 16
 
 
 class SecureMessage:
@@ -85,22 +88,60 @@ class SecureMessage:
         """TODO: Diffie-Hellman key exchange"""
 
         port = self.s.getsockname()
-     
       
         print(port[0])
-        
         print(port[1])
         print(self.name)
         # make the public keys for client and server and send
+        #
+        server = pyDH.DiffieHellman()
+        server_to_client_pubkey = server.gen_public_key()
+        server_to_client_pubkey = (str(server_to_client_pubkey)+"\n").encode()
+        #self.mysend(server_to_client_pubkey)
+        self.s.send(server_to_client_pubkey[:SEND_BUFFER_SIZE])
+        data = self.s.recv(SEND_BUFFER_SIZE).decode()
+        #
+        # print("Client public key: \n", data)
+        # print("***")
+        intdata = int(data)
+        #whats used from server to client
+        #key 1
+        server_to_client_sharedkey = server.gen_shared_key(intdata)
+        # print("Shared Key: \n", server_to_client_sharedkey)
 
-        #server
+        client = pyDH.DiffieHellman()
+        client_to_server_pubkey = client.gen_public_key()
+        client_to_server_pubkey = (str(client_to_server_pubkey)+"\n").encode()
+        self.s.send(client_to_server_pubkey[:SEND_BUFFER_SIZE])
+        data2 = self.s.recv(SEND_BUFFER_SIZE).decode()
+        # print("Server public key: \n", data2)
+        # print("***")
+        intdata2 = int(data2)
         
+        #
+        
+        #second key 
+        client_to_server_sharedkey = client.gen_shared_key(intdata)
+        print("Shared Key: \n", client_to_server_sharedkey)
+
+
+        #store as class variables
+        self.SERVER_TO_CLIENT_KEY = server_to_client_sharedkey
+        self.CLIENT_TO_SERVER_KEY = server_to_client_sharedkey
+        if(self.name == "server"):
+            SERVER_OR_CLIENT = True
+        else:
+            SERVER_OR_CLIENT = False
+
+
+
+        '''
         if(self.name == "server"):
             server = pyDH.DiffieHellman()
             server_pubkey = server.gen_public_key()
             server_pubkey = (str(server_pubkey)+"\n").encode()
             #self.mysend(b'server public key:')
-            self.mysend(server_pubkey)
+            self.mysend(server_pubkey) this is one key 
             data = self.s.recv(SEND_BUFFER_SIZE).decode()
             print("Client public key: \n", data)
             print("***")
@@ -122,8 +163,8 @@ class SecureMessage:
             self.mysend(client_pubkey)
             client_sharedkey = client.gen_shared_key(intdata)
             print("Shared Key: \n", client_sharedkey)
+        '''
         """
-
         
         server_sentkey = int(self.s.recv(SEND_BUFFER_SIZE).decode())
 
@@ -140,23 +181,55 @@ class SecureMessage:
         self.client_key = str.encode(self.client_sharedkey)
         self.server_key = str.encode(self.server_sharedkey)
         """    
-        #generate shared keys 
-
-        #self.s.send(str(server_pubkey).encode('utf8'))
-        #self.mysend(client_pubkey)
-        #server_sentkey = self.s.recv(SEND_BUFFER_SIZE).decode()
-        #print("sent key")
-        #print(server_sentkey)
-              
+  
         pass
 
     def process_user_input(self, user_input):
         """TODO: Add authentication and encryption"""
+        #is the self the key? 
+        #cipher = AES.new(key, AES.MODE_EAX) key is going to be whether or not it is is server or client
+        #now that key is a class variable encode it to bytes
+        #if true it is server
+        if(SERVER_OR_CLIENT):
+            key = self.SERVER_TO_CLIENT_KEY
+        else:
+            key = self.CLIENT_TO_SERVER_KEY
+        
+        key = key[:BYTE_SIZE].encode()
+        cipher = AES.new(key, AES.MODE_EAX)
+        ciphertext, tag = cipher.encrypt_and_digest(user_input)
+        nonce = cipher.nonce
 
-        return user_input
+        concatenated_info = ciphertext + b' ' + tag + b' ' + nonce
+        return concatenated_info
+
 
     def process_received_message(self, recv_msg):
         """TODO: Check message integrity and decrypt"""
+        if(SERVER_OR_CLIENT):
+            key = self.SERVER_TO_CLIENT_KEY
+        else:
+            key = self.CLIENT_TO_SERVER_KEY
+        
+        key = key[:BYTE_SIZE].encode()
+        split_info = recv_msg.split(b' ')
+        cipherText = split_info[0]
+        tag = split_info[1]
+        nonce - split_info[2]
+
+        try:
+            cipher = AES.new(key, AES.MODE_EAX, nonce)
+            plaintext = cipher.decrypt_and_verify(cipherText, tag)
+            plaintext = plaintext.decode()
+        except ValueError:
+            print("Incorrect decryption")
+
+        try:
+            cipher.verify(tag)
+            print("NoMessageModificationDetected: ", plainText)
+        except ValueError:
+            ValueError("MessageModificationDetecteed")
+
         return recv_msg
 
 
@@ -190,17 +263,3 @@ if __name__ == "__main__":
     main()
 
    
-    """ print("server key:")
-    print(server_pubkey)
-    server_1 = "This is the servers public key:\n"
-    self.s.sendall(str(server_1).encode('utf8'))
-
-    #need to send this key to client: python3 SecureMessaging.py [Server IP] [Server Port]        self.s.sendall(str(server_pubkey).encode('utf8'))
-    print("server public key sent to client")
-    msg = "Do you have a public key? (Yes / No)"
-    self.s.sendall(str(msg).encode('utf8'))
-    data = self.s.recv(SEND_BUFFER_SIZE)
-    print(data)
-    print("did we get it")
-    #bytes to str
-    """
