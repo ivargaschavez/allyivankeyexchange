@@ -1,7 +1,7 @@
 """
 SecureMessaging.py
 
-NAMES: [Your full names here]
+NAMES: Ally Yu and Ivan 
 
 Run as client: python3 SecureMessaging.py [Server IP] [Server Port]
 Run as server: python3 SecureMessaging.py [Server Port]
@@ -14,6 +14,7 @@ import os
 from threading import Thread
 import Crypto
 import pyDH
+from Crypto.Cipher import AES
 
 
 QUEUE_LENGTH = 1
@@ -69,7 +70,8 @@ class SecureMessage:
     def recv_loop(self):
         """Loop to receive and print messages"""
         while True:
-            recv_msg = self.s.recv(SEND_BUFFER_SIZE).decode()
+            #recv_msg = self.s.recv(SEND_BUFFER_SIZE).decode()
+            recv_msg = self.s.recv(SEND_BUFFER_SIZE)
             if recv_msg:
                 message = self.process_received_message(recv_msg)
                 sys.stdout.write("\t" + message + "\n")
@@ -96,7 +98,7 @@ class SecureMessage:
         #
         server = pyDH.DiffieHellman()
         server_to_client_pubkey = server.gen_public_key()
-        server_to_client_pubkey = (str(server_to_client_pubkey)+"\n").encode()
+        server_to_client_pubkey = str(server_to_client_pubkey).encode()
         #self.mysend(server_to_client_pubkey)
         self.s.send(server_to_client_pubkey[:SEND_BUFFER_SIZE])
         data = self.s.recv(SEND_BUFFER_SIZE).decode()
@@ -111,7 +113,7 @@ class SecureMessage:
 
         client = pyDH.DiffieHellman()
         client_to_server_pubkey = client.gen_public_key()
-        client_to_server_pubkey = (str(client_to_server_pubkey)+"\n").encode()
+        client_to_server_pubkey = str(client_to_server_pubkey).encode()
         self.s.send(client_to_server_pubkey[:SEND_BUFFER_SIZE])
         data2 = self.s.recv(SEND_BUFFER_SIZE).decode()
         # print("Server public key: \n", data2)
@@ -200,7 +202,8 @@ class SecureMessage:
         ciphertext, tag = cipher.encrypt_and_digest(user_input)
         nonce = cipher.nonce
 
-        concatenated_info = ciphertext + b' ' + tag + b' ' + nonce
+        concatenated_info = ciphertext + b'  ' + tag + b'  ' + nonce
+        
         return concatenated_info
 
 
@@ -212,17 +215,18 @@ class SecureMessage:
             key = self.CLIENT_TO_SERVER_KEY
         
         key = key[:BYTE_SIZE].encode()
-        split_info = recv_msg.split(b' ')
+        split_info = recv_msg.split(b'  ')
         cipherText = split_info[0]
         tag = split_info[1]
-        nonce - split_info[2]
+        nonce = split_info[2]
+        
 
         try:
             cipher = AES.new(key, AES.MODE_EAX, nonce)
-            plaintext = cipher.decrypt_and_verify(cipherText, tag)
-            plaintext = plaintext.decode()
+            plainText = cipher.decrypt_and_verify(cipherText, tag)
+            plainText = plainText.decode()
         except ValueError:
-            print("Incorrect decryption")
+            ValueError("Incorrect decryption")
 
         try:
             cipher.verify(tag)
@@ -230,7 +234,7 @@ class SecureMessage:
         except ValueError:
             ValueError("MessageModificationDetecteed")
 
-        return recv_msg
+        return plainText
 
 
 def main():
