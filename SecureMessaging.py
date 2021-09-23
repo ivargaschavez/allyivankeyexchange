@@ -124,7 +124,7 @@ class SecureMessage:
         
         #second key 
         client_to_server_sharedkey = client.gen_shared_key(intdata)
-        print("Shared Key: \n", client_to_server_sharedkey)
+        #print("Shared Key: \n", client_to_server_sharedkey)
 
 
         #store as class variables
@@ -135,63 +135,12 @@ class SecureMessage:
         else:
             SERVER_OR_CLIENT = False
 
-
-
-        '''
-        if(self.name == "server"):
-            server = pyDH.DiffieHellman()
-            server_pubkey = server.gen_public_key()
-            server_pubkey = (str(server_pubkey)+"\n").encode()
-            #self.mysend(b'server public key:')
-            self.mysend(server_pubkey) this is one key 
-            data = self.s.recv(SEND_BUFFER_SIZE).decode()
-            print("Client public key: \n", data)
-            print("***")
-            intdata = int(data)
-            server_sharedkey = server.gen_shared_key(intdata)
-            print("Shared Key: \n", server_sharedkey)
-        #client
-        else:
-            data = self.s.recv(SEND_BUFFER_SIZE).decode()
-            print("Server public key: \n", data)
-            print("***")
-            intdata = int(data)
-            #bytedata = bytes(data, 'utf-8')
-            #self.mysend(b'client recieved public key')
-            client = pyDH.DiffieHellman()
-            client_pubkey = client.gen_public_key()
-            client_pubkey = (str(client_pubkey)+"\n").encode()
-            #self.mysend(b'client public key:')
-            self.mysend(client_pubkey)
-            client_sharedkey = client.gen_shared_key(intdata)
-            print("Shared Key: \n", client_sharedkey)
-        '''
-        """
-        
-        server_sentkey = int(self.s.recv(SEND_BUFFER_SIZE).decode())
-
-        self.server_sharedkey = server.gen_shared_key(server_sentkey)
-        self.s.send(client[:SEND_BUFFER_SIZE])
-
-        client_sentkey = int(self.s.recv(SEND_BUFFER_SIZE).decode())
-
-        self.client_sharedkey = client.gen_shared_key(client_sentkey)
-
-        #we will be using AES later and AES only takes keys max 32 bits 
-        self.client_sharedkey = self.str(client_sharedkey[:AES_KEY_SIZE])
-       
-        self.client_key = str.encode(self.client_sharedkey)
-        self.server_key = str.encode(self.server_sharedkey)
-        """    
   
         pass
 
     def process_user_input(self, user_input):
         """TODO: Add authentication and encryption"""
-        #is the self the key? 
-        #cipher = AES.new(key, AES.MODE_EAX) key is going to be whether or not it is is server or client
-        #now that key is a class variable encode it to bytes
-        #if true it is server
+    
         if(SERVER_OR_CLIENT):
             key = self.SERVER_TO_CLIENT_KEY
         else:
