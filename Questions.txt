@@ -1,7 +1,7 @@
 COSC 311 Assignment #1: Secure Messaging
 
 
-NAMES: [Full Names of both partners]
+NAMES: Ally Yu and Ivan Vargas Chavez
 
 ______________________________________________________________________________________
 
@@ -9,21 +9,29 @@ Question #1
 Describe the protocol you agreed upon with your classmates in English (no code) in
 enough detail that someone else could implement it. 
 
-[Your answer here]
+Our class agreed upon using the DH Key exchange and having the server first generate a
+public key to send to client and then the client generate its public key and send it to 
+the server. We agreed we would need to store these keys somewhere in the code so we can 
+use them later in the process_user_input and process_recieved_message functions. 
+Next we agreed upon creating a byte string of the ciphertext tag adn nonce and separating them
+using delimiters so we know what part of the incoming message to give to AES as the nonce and tag.
+Then, we agreed upon using AES EAX cipher mode for our encryption after a classmate said it 
+provides both confidentiality and integrity. 
 
 ______________________________________________________________________________________
 
 Question #2
 Describe two pros of the protocol you agreed upon with your classmates.
 
-[Your answer here]
+One pro of the protocol we agreed upon was using EAX mode because it provides HMAC for
+authentication. We did not have to implement HMAC because of this. 
+
 
 ______________________________________________________________________________________
 
 Question #3
 Describe two cons of the protocol you agreed upon with your classmates.
 
-[Your answer here]
 
 ______________________________________________________________________________________
 
@@ -32,7 +40,10 @@ Thinking like a defender, what/who do you have to trust in order to be confident
 that messages sent using your SecureMessaging.py cannot be obtained by an adversary and why? 
 Describe at least THREE entities you must trust.  
 
-[Your answer here]
+Three entities we must trust are the authors of AES Cipher and pyDH because they are the 
+foundation of our confidentiality and integrity of the program. Lastly, we also have to trust 
+our partner (if we did work with partners). We must trust that the partner will not do any malicious
+coding to the program or give away our protocol to others that want to try and break it. 
 
 ______________________________________________________________________________________
 
@@ -41,25 +52,29 @@ Thinking like an attacker, how might an adversary still compromise the confident
 integrity of a message sent to a classmate using your SecureMessaging.py? 
 Describe at least TWO potential attacks. 
 
-[Your answer here]
+An adversary can still compromise the confidentiality or intergrity of a message by simply
+looking over one's shoulder and reading the messages unencoded. 
 
 ______________________________________________________________________________________
 
 Question #6 (ungraded)
 How did you divide the work between partners? (Put N/A if worked alone)
 
-[Your answer here]
+We created a git repository and we would first talk over zoom about
+what we want to accomplish. One of us would code and commit. Next, the other partner
+would help debug. Then this went on for each function, changing up who was the first to code
+and who would debug and add code that would make functions work. 
 
 ______________________________________________________________________________________
 
 Question #7 (optional, ungraded)
 Did you use code snippets from anywhere online that you need to cite?
 
-[Your answer here]
+No
 
 ______________________________________________________________________________________
 
 Question #8 (optional, ungraded) 
 Do you have any suggestions for improving this assignment in the future?
 
-[Your answer here]
+N/A
