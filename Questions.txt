@@ -25,7 +25,9 @@ Describe two pros of the protocol you agreed upon with your classmates.
 
 One pro of the protocol we agreed upon was using EAX mode because it provides HMAC for
 authentication. We did not have to implement HMAC because of this. In addition, during our diffie-helman key
-exchange algorithm me and my classmates agreed that our handshake will involve the server sending the key to client first and then the client to server. The pro of this is that the client will know the server works and this protects the client/
+exchange algorithm me and my classmates agreed that our handshake will involve the server sending the key to 
+client first and then the client to server. The pro of this is that the client will know the server works and this 
+protects the client. 
 
 
 ______________________________________________________________________________________
@@ -33,7 +35,8 @@ ________________________________________________________________________________
 Question #3
 Describe two cons of the protocol you agreed upon with your classmates.
 
-One con of the protocol we agreed with our classmate was how to send information. For example, we are supposed to send over the ciphertext, tag, and nonce respectively. We had to decide which data structure to use like bytes, string or json. The wide availibity of options made this protocol hard. Another, con is that the protocol makes it relevant we have limited bytes to work with and the order and size of our ciphertext, tag, and nonce greatly affects the secure messaging system.
+One con of the protocol we agreed with our classmate was how to send information. For example, we are supposed to send over the ciphertext, tag, and nonce respectively. We had to decide which data structure to use like bytes, string or json. The wide availibity of options made this protocol hard. 
+Another, con is that the protocol makes it relevant we have limited bytes to work with and the order and size of our ciphertext, tag, and nonce greatly affects the secure messaging system.
 
 ______________________________________________________________________________________
 
@@ -55,7 +58,9 @@ integrity of a message sent to a classmate using your SecureMessaging.py?
 Describe at least TWO potential attacks. 
 
 An adversary can still compromise the confidentiality or intergrity of a message by simply
-looking over one's shoulder and reading the messages unencoded. 
+looking over one's shoulder and reading the messages unencoded. Also if one's computer
+is left on a table unlocked, an adversary can easily go to the program and send a message 
+to another person who is under the impression that the message came from the owner of the laptop.
 
 ______________________________________________________________________________________
 
