@@ -78,13 +78,7 @@ class SecureMessage:
                 sys.stdout.flush()
             else:
                 os._exit(0)
-    def mysend(self, msg):
-        totalsent = 0
-        while totalsent < len(msg):
-            sent = self.s.send(msg[totalsent:])
-            if sent == 0:
-                raise RuntimeError("socket connection broken")
-            totalsent = totalsent + sent
+    
 
     def key_exchange(self):
         """TODO: Diffie-Hellman key exchange"""
@@ -99,7 +93,7 @@ class SecureMessage:
         server = pyDH.DiffieHellman()
         server_to_client_pubkey = server.gen_public_key()
         server_to_client_pubkey = str(server_to_client_pubkey).encode()
-        #self.mysend(server_to_client_pubkey)
+      
         self.s.send(server_to_client_pubkey[:SEND_BUFFER_SIZE])
         data = self.s.recv(SEND_BUFFER_SIZE).decode()
         #
